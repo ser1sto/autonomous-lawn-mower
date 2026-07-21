@@ -22,23 +22,23 @@ CSV_FILE_PATH = "/app/data/weather_log.csv"
 
 def check_open_meteo():
     url = f"https://api.open-meteo.com/v1/forecast?latitude={LATITUDE}&longitude={LONGITUDE}&current=precipitation,precipitation_probability"
-    print("\n--- 1. OPEN-METEO (Raw JSON) ---")
     try:
         res = requests.get(url, timeout=5)
+        print("\n--- 1. OPEN-METEO (Raw JSON) ---")
         print(f"Status Code: {res.status_code}")
         print(f"Current Precipitation: {res.json().get('current', {}).get('precipitation')} mm")
-        print(f"Current Precipitation Probability: {res.json().get('current', {}).get('precipitation_probability')} %")
+        print(f"Current Precipitation Probability: {res.json().get('current', {}).get('precipitation_probability')}")
     except Exception as e:
         print(f"Błąd Open-Meteo: {e}")
 
 def check_weather_api():
     url = f"https://api.openweathermap.org/data/2.5/weather?lat={LATITUDE}&lon={LONGITUDE}&appid={WEATHERAPI_KEY}"
-    print("\n--- 2. WEATHERAPI.COM (Raw JSON) ---")
     if not WEATHERAPI_KEY:
         print("Brak klucza WEATHERAPI_KEY w zmiennych środowiskowych!")
         return
     try:
         res = requests.get(url, timeout=5)
+        print("\n--- 2. WEATHERAPI.COM (Raw JSON) ---")
         print(f"Status Code: {res.status_code}")
         print(f"Current Weather: {res.json()['weather'][0]['main']}")
     except Exception as e:
@@ -51,8 +51,10 @@ def check_tommorow_api():
         return
     try:
         res = requests.get(url, timeout=5)
+        print("\n--- 3. TOMMOROWAPI.COM (Raw JSON) ---")
         print(f"Status Code: {res.status_code}")
-        print(f"Current Weather: {res.json()['data']['values']}")
+        print(f"Current Precipitation: {res.json()['data']['values']['rainIntensity']} mm")
+        print(f"Precipitation Probability: {res.json()['data']['values']['precipitationProbability']}")
     except Exception as e:
         print(f"Błąd TommorowAPI: {e}")
 
