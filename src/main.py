@@ -17,6 +17,7 @@ NTFY_TOPIC = os.getenv("NTFY_TOPIC")
 INTERVAL_MINUTES = int(os.getenv("INTERVAL_MINUTES"))
 WEATHERAPI_KEY = os.getenv("WEATHERAPI_KEY")
 TOMMOROWAPI_KEY = os.getenv("TOMMOROWAPI_KEY")
+METEOSOURCEAPI_KEY = os.getenv("METEOSOURCEAPI_KEY")
 CSV_FILE_PATH = "/app/data/weather_log.csv"
 # ===========================================================
 
@@ -58,6 +59,19 @@ def check_tommorow_api():
     except Exception as e:
         print(f"Błąd TommorowAPI: {e}")
 
+def check_meteosource_api():
+    url = f"https://www.meteosource.com/api/v1/free/point?lat={LATITUDE}&lon={LONGITUDE}&sections=current&language=en&units=metric&key={METEOSOURCEAPI_KEY}"
+    if not METEOSOURCEAPI_KEY:
+        print("Brak klucza METEOSOURCEAPI_KEY w zmiennych środowiskowych!")
+        return
+    try:
+        res = requests.get(url, timeout=5)
+        print("\n--- 4. METEOSOURCEAPI.COM (Raw JSON) ---")
+        print(f"Status Code: {res.status_code}")
+        print(f"Current Precipitation: {res.json()['current']['precipitation']['total']} mm")
+    except Exception as e:
+        print(f"Błąd MeteosourceAPI: {e}")
+
 
 
 if __name__ == "__main__":
@@ -66,3 +80,4 @@ if __name__ == "__main__":
     check_open_meteo()
     check_weather_api()
     check_tommorow_api()
+    check_meteosource_api()
